@@ -1,6 +1,6 @@
 interface:
   display_name: "Goal Alignment Guard · 目标对齐"
-  short_description: "Catch goal drift and clarify only consequential ambiguity"
-  default_prompt: "Use $goal-alignment-guard to reconcile my current goal, allowed changes, and preserved constraints before continuing."
+  short_description: "Align before work, recheck changes, verify delivery"
+  default_prompt: "Use $goal-alignment-guard to align the outcome, change boundaries, and acceptance before starting, recheck consequential changes, and verify the result before delivery."
 policy:
   allow_implicit_invocation: true

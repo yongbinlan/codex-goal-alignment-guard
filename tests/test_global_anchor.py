@@ -117,6 +117,24 @@ class AnchorTests(unittest.TestCase):
             with self.subTest(path=path), self.assertRaises(ValueError):
                 anchor.safe_target(path)
 
+    def test_upgrade_existing_anchor_preserves_surroundings_and_backup(self):
+        prefix = b"\xef\xbb\xbf# Existing private rules\r\n"
+        suffix = b"\r\n# Later unrelated rules\r\n"
+        old = prefix + anchor.START.encode() + b"\r\nPrevious version\r\n" + anchor.END.encode() + suffix
+        self.target.write_bytes(old)
+        preview = anchor.configure(self.home)
+        self.assertEqual(preview["status"], "preview")
+        self.assertEqual(self.target.read_bytes(), old)
+        result = anchor.configure(self.home, apply=True)
+        updated = self.target.read_bytes()
+        self.assertEqual(Path(result["backup"]).read_bytes(), old)
+        self.assertTrue(updated.startswith(prefix))
+        self.assertTrue(updated.endswith(suffix))
+        snippet = (MODULE.parents[1] / "references" / "global-anchor.md").read_text(encoding="utf-8")
+        self.assertEqual(updated, anchor.proposed_bytes(old, snippet))
+        self.assertEqual(updated.count(anchor.START.encode()), 1)
+        self.assertEqual(anchor.configure(self.home, apply=True)["status"], "unchanged")
+
     def test_empty_or_whitespace_home_rejected(self):
         for value in ("", " ", "\t"):
             with self.subTest(value=value), self.assertRaises(ValueError):

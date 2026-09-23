@@ -1,8 +1,8 @@
-# Goal Alignment Guard · 目标对齐与偏差纠正
+# Goal Alignment Guard · 全过程目标对齐
 
-A lightweight agent skill for catching goal drift, preserving change boundaries, and asking only consequential clarification questions.
+A lightweight agent skill for aligning goals before work, rechecking consequential changes, and verifying alignment before delivery.
 
-让 Agent 围绕**当前目标**工作，而不是只抓最后一句话的关键词。适合多轮修改、纠正误解、方法切换及交付前的范围核对。普通明确的小任务不增加仪式感。
+让 Agent 围绕**当前目标**工作，而不是只抓最后一句话的关键词。实质性任务从开始就核对目标、模式、修改边界及验收条件，不等出错才触发；关键变化时复核，交付前对照结果。普通明确的小任务轻量处理，不增加仪式感。
 
 **不是自动拦截器，不保证零错误，也没有经过实测的返工降低百分比。** 它补充专业技能和结果验收，不取代它们。
 
@@ -19,14 +19,14 @@ A lightweight agent skill for catching goal drift, preserving change boundaries,
 显式使用：
 
 ```text
-使用 $goal-alignment-guard 核对本任务的目标、允许修改项和必须保留项，然后继续。
+使用 $goal-alignment-guard，开始前核对目标、修改边界和验收条件，关键变化时复核，交付前检查结果。目标清楚就直接执行，只有实质性歧义才问我。
 ```
 
 标准目录内包含 `SKILL.md` 和 `agents/openai.yaml`；不依赖 API Key、第三方服务或模型调用脚本。其他兼容 Agent Skills 的宿主可按其安装方式使用，尚未逐个平台验证。
 
 ## 希望跨任务进行轻量检查？再启用全局规则
 
-**全局可安装 ≠ 每次必然自动调用。** 技能按需加载；基础检查可以经授权加入 Codex 的全局 `AGENTS.md`。不默认篡改你的全局设置。
+**全局可安装 ≠ 每次必然自动调用。** 技能按需加载；基础检查和实质性任务的前置调用规则可以经授权加入 Codex 的全局 `AGENTS.md`。不默认篡改你的全局设置。检查不等于提问：目标明确且授权充足时直接执行。
 
 推荐直接把下面这段发给 Codex：
 
@@ -57,6 +57,8 @@ python scripts/global_anchor.py --remove --apply
 
 | 情况 | 应有行为 |
 |---|---|
+| 首次收到实质性任务，尚无错误 | 先核对结果、任务模式、边界及验收，再选择方案 |
+| 进入执行、采用替代方案或准备交付 | 复核受影响的约束和证据，不重复完整问卷 |
 | 仅改变描述方式 | 保留未被修改的目标与工作模式 |
 | 明确改变目标 | 跟随新目标，不死守旧要求 |
 | 术语有歧义且影响交付 | 问一个具体问题，不带着免责声明交付错误版本 |
@@ -72,6 +74,8 @@ python scripts/global_anchor.py --remove --apply
 目标是减少**可避免的范围偏差**。不能保证外部生成模型遵循提示词，也不能证明媒体、代码或业务结果合格。真实返工率、额外追问率和时间成本需要后续使用数据，不能从几条通过的测试推导出来。
 
 ## 本地测试
+
+已有 v0.1.0 用户更新技能后，如曾启用全局规则，也需在授权范围内预览并重新应用配置助手；仅更新技能文件不会自动改写旧的全局区块。v0.1.0 标签保留不动，便于回退。
 
 从仓库根目录运行：
 

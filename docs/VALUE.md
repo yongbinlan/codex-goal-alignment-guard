@@ -10,7 +10,7 @@
 
 - 检查 OpenAI 官方 curated 技能清单及 [define-goal](https://github.com/openai/skills/tree/main/skills/.curated/define-goal)。它明确侧重定义、细化目标和 goal 工具创建，不覆盖整个多轮执行中的偏差纠正。本项目不复制其实现，也不自动创建 goal。
 - 检查本地策略预检与执行效率类技能：有目标检查的交集，但职责在方案取舍、资源投入，不专门处理新消息对既有边界的影响。
-- [全局 AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) 适合放简短通用要求；[Skill](https://learn.chatgpt.com/docs/build-skills) 适合按需加载纠偏细则。两层分工，避免每轮重复加载大量上下文。
+- [全局 AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) 适合放简短通用要求及前置路由；[Skill](https://learn.chatgpt.com/docs/build-skills) 适合实质性任务开始时加载目标对齐细则，并在关键变化和交付时复核。两层分工，避免每轮重复完整流程。
 
 上述是已检查的范围，不声称检索过所有社区技能或证明不存在其他同类项目。
 
